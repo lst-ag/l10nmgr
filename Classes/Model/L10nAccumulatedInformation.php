@@ -273,31 +273,18 @@ class L10nAccumulatedInformation
                                             }
                                         }
                                         BackendUtility::workspaceOL($table, $row);
-                                        if ($table === 'sys_file_reference') {
-                                            $fileList .= $fileList ? ',' . (int)$row['uid_local'] : (int)$row['uid_local'];
-                                        }
-                                        if (is_array($row) && count($tableUidConstraintIndex) > 0) {
-                                            if (is_array($row) && isset($tableUidConstraintIndex[$table . ':' . $row['uid']])) {
-                                                $accum[$pageId]['items'][$table][$row['uid']] = $t8Tools->translationDetails(
-                                                    $table,
-                                                    $row,
-                                                    $sysLang,
-                                                    $flexFormDiff,
-                                                    $previewLanguage
-                                                );
-                                                $this->_increaseInternalCounters($accum[$pageId]['items'][$table][$row['uid']]['fields']);
+                                        if (is_array($row) && ($tableUidConstraintIndex[$table . ':' . $row['uid']] || !isset($this->excludeIndex[$table . ':' . $row['uid']]))) {
+                                            $accum[$pageId]['items'][$table][$row['uid']] = $t8Tools->translationDetails(
+                                                $table,
+                                                $row,
+                                                $sysLang,
+                                                $flexFormDiff,
+                                                $previewLanguage
+                                            );
+                                            if ($table === 'sys_file_reference') {
+                                                $fileList .= $fileList ? ',' . (int)$row['uid_local'] : (int)$row['uid_local'];
                                             }
-                                        } else {
-                                            if (is_array($row) && !isset($this->excludeIndex[$table . ':' . $row['uid']])) {
-                                                $accum[$pageId]['items'][$table][$row['uid']] = $t8Tools->translationDetails(
-                                                    $table,
-                                                    $row,
-                                                    $sysLang,
-                                                    $flexFormDiff,
-                                                    $previewLanguage
-                                                );
-                                                $this->_increaseInternalCounters($accum[$pageId]['items'][$table][$row['uid']]['fields']);
-                                            }
+                                            $this->_increaseInternalCounters($accum[$pageId]['items'][$table][$row['uid']]['fields']);
                                         }
                                     }
                                 }
