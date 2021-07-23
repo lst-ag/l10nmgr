@@ -179,6 +179,17 @@ class L10nAccumulatedInformation
         $flexFormDiff = unserialize($l10ncfg['flexformdiff']);
         $flexFormDiff = $flexFormDiff[$sysLang];
         $this->excludeIndex = array_flip(GeneralUtility::trimExplode(',', $l10ncfg['exclude'], true));
+        $onlyInclude = [];
+        if (!empty($l10ncfg['include']) && in_array('pages', GeneralUtility::trimExplode(',', $l10ncfg['tablelist']))) {
+            $onlyInclude['pages'] = GeneralUtility::trimExplode(',', $l10ncfg['pages'], true);
+        }
+        foreach (GeneralUtility::trimExplode(',', $l10ncfg['include'], true) as $tableIdString) {
+            [$tableName, $recordUid] = explode(':', $tableIdString);
+            if (!is_array($onlyInclude[$tableName])) {
+                $onlyInclude[$tableName] = [];
+            }
+            $onlyInclude[$tableName][] = $recordUid;
+        }
         // Init:
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         /** @var Tools $t8Tools */
@@ -254,6 +265,9 @@ class L10nAccumulatedInformation
                 $accum[$pageId]['items'] = [];
                 // Traverse tables:
                 foreach ($GLOBALS['TCA'] as $table => $cfg) {
+                    if (!empty($onlyInclude) && !isset($onlyInclude[$table])) {
+                        continue;
+                    }
                     $fileList = '';
                     // Only those tables we want to work on:
                     if (GeneralUtility::inList($l10ncfg['tablelist'], $table)) {
@@ -282,6 +296,9 @@ class L10nAccumulatedInformation
                             }
                             // Now, for each record, look for localization:
                             foreach ($allRows as $row) {
+                                if (is_array($onlyInclude[$table]) && !in_array($row['uid'], $onlyInclude[$table])) {
+                                    continue;
+                                }
                                 if (isset($this->excludeIndex[$table . ':' . $row['uid']])) {
                                     continue;
                                 }
@@ -366,7 +383,7 @@ class L10nAccumulatedInformation
         foreach ($this->includeIndex as $recId => $rec) {
             list($table, $uid) = explode(':', $recId);
             $row = BackendUtility::getRecordWSOL($table, $uid);
-            if (count($row)) {
+            if (is_array($row)) {
                 $accum[-1]['items'][$table][$row['uid']] = $t8Tools->translationDetails(
                     $table,
                     $row,
