@@ -20,6 +20,7 @@ namespace Localizationteam\L10nmgr\Model;
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Localizationteam\L10nmgr\Event\XmlImportFileIsParsed;
 use Localizationteam\L10nmgr\Model\Tools\XmlTools;
 use Localizationteam\L10nmgr\Traits\BackendUserTrait;
 use PDO;
@@ -27,6 +28,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -99,6 +101,14 @@ class CatXmlImportManager
             ),
             3
         ); // For some reason PHP chokes on incoming &nbsp; in XML!
+
+        $event = new XmlImportFileIsParsed($this->xmlNodes, $this->_errorMsg);
+        /** @var EventDispatcher $eventDispatcher */
+        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
+        $event = $eventDispatcher->dispatch($event);
+        $this->xmlNodes = $event->getXmlNodes();
+        $this->_errorMsg = $event->getErrorMessages();
+
         if (!is_array($this->xmlNodes)) {
             $this->_errorMsg[] = $this->getLanguageService()->getLL('import.manager.error.parsing.xml2tree.message') . $this->xmlNodes . ' Content: ' . $fileContent;
             return false;
