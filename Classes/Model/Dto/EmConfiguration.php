@@ -11,6 +11,11 @@ class EmConfiguration
     /**
      * @var bool
      */
+    protected $delete_translations = false;
+
+    /**
+     * @var bool
+     */
     protected $enable_hidden_languages = false;
 
     // Enable settings
@@ -154,6 +159,11 @@ class EmConfiguration
                 $this->$key = $value;
             }
         }
+    }
+
+    public function isDeleteTranslations(): bool
+    {
+        return $this->delete_translations;
     }
 
     public function isEnableHiddenLanguages(): bool

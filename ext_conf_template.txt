@@ -24,6 +24,9 @@ disallowDoktypes = 255, ---div---
 # cat=basic/enable/70; type=boolean; label=DataHandler dontProcessTransformations: Disable processing of incomming text field data (Default: true). Uncheck this if your translation tool modifies the html structure (e.g. prettify) in your translation files.
 import_dontProcessTransformations = 1
 
+# cat=basic/enable/80; type=boolean[1]; label=Delete exsisting translations when importing xml
+delete_translations = 0
+
 # Load L10N manager configration
 #
 # cat=basic/l10nmgr/10; type=string; label=L10N Manager configurations: The uids of L10N Manager configurations (CSV).
