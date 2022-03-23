@@ -23,6 +23,9 @@ enable_neverHideAtCopy = 1
 # cat=basic/enable/60; type=string; label=Disallow doktypes: If pages of certain doktypes should not be translated/exported you can define the doktypes here. Available doktypes are 1 (Standard), 2 (Advanced), 3 (External URL), 4 (Shortcut), 5 (Not in menu), 5 (Backend User Section), 7 (Mount Page), 199 (Spacer), 254 (Sys Folder), 255 (Recycler), ---div--- (------)
 disallowDoktypes = 255, ---div---
 
+# cat=basic/enable/40; type=boolean[1]; label=Delete exsisting translations when importing xml
+delete_translations = 0
+
 # Load L10N manager configration
 #
 # cat=basic/l10nmgr/10; type=string; label=L10N Manager configurations: The uids of L10N Manager configurations (CSV).

@@ -257,8 +257,10 @@ class Import extends L10nCommand
         if ($importManager->headerData['t3_sourceLang'] === $importManager->headerData['t3_targetLang']) {
             $this->previewLanguage = $this->sysLanguage;
         }
-        //Delete previous translations
-        $importManager->delL10N($importManager->getDelL10NDataFromCATXMLNodes($importManager->getXmlNodes()));
+        // Delete previous translations if enabled
+        if ($this->extensionConfiguration['delete_translations']) {
+            $importManager->delL10N($importManager->getDelL10NDataFromCATXMLNodes($importManager->getXmlNodes()));
+        }
         //Make preview links
         if ($callParameters['preview']) {
             if (!ExtensionManagementUtility::isLoaded('workspaces')) {
@@ -391,7 +393,9 @@ class Import extends L10nCommand
                         throw new Exception("l10ncfg not loaded! Exiting...\n");
                     }
                     // Delete previous translations
-                    $importManager->delL10N($importManager->getDelL10NDataFromCATXMLNodes($importManager->getXmlNodes()));
+                    if ($this->extensionConfiguration['delete_translations']) {
+                        $importManager->delL10N($importManager->getDelL10NDataFromCATXMLNodes($importManager->getXmlNodes()));
+                    }
                     // Make preview links
                     if ($callParameters['preview']) {
                         if (!ExtensionManagementUtility::isLoaded('workspaces')) {
