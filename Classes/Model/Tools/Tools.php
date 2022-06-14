@@ -952,10 +952,7 @@ class Tools
                                 && $GLOBALS['TCA'][$tInfo['translation_table']]['ctrl']['transOrigPointerField'] !== $field
                                 && $GLOBALS['TCA'][$tInfo['translation_table']]['ctrl']['transOrigDiffSourceField'] !== $field
                             ) {
-                                $key = $tInfo['translation_table'] . ':' . BackendUtility::wsMapId(
-                                    $tInfo['translation_table'],
-                                    $translationUID
-                                ) . ':' . $field;
+                                $key = $tInfo['translation_table'] . ':' . $translationUID . ':' . $field;
                                 if ($cfg['config']['type'] == 'flex') {
                                     $dataStructArray = $this->_getFlexFormMetaDataForContentElement(
                                         $table,
